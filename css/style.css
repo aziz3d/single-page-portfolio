@@ -156,3 +156,75 @@ body {
     border-color: #6366f1;
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
 }
+
+/* Go to Top button styles */
+#go-to-top {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
+    will-change: transform, opacity;
+}
+
+#go-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Bounce animation for Go to Top button */
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+    40% {transform: translateY(-10px);}
+    60% {transform: translateY(-5px);}
+}
+
+.bounce {
+    animation: bounce 0.8s cubic-bezier(0.28, 0.84, 0.42, 1);
+}
+
+/* Testimonial slider styles */
+.testimonial-item {
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    left: 0;
+}
+
+.testimonial-item:first-child {
+    opacity: 1;
+    position: relative;
+    transform: translateX(0);
+}
+
+.testimonial-item.active {
+    opacity: 1;
+    position: relative;
+    transform: translateX(0);
+}
+
+/* Client logo scroll styles */
+.client-logos {
+    display: flex;
+    animation: scrollLogos 30s linear infinite;
+    width: max-content;
+}
+
+@keyframes scrollLogos {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.client-logo-item {
+    transition: all 0.3s ease;
+}
+
+.client-logo-item:hover {
+    transform: scale(1.1);
+    filter: grayscale(0);
+}

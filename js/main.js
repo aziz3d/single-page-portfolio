@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', function() {
     initTestimonialSlider();
     initClientLogoScroll();
     initContactForm();
+    initGoToTopButton();
+    initStatsCounters();
 });
 
 function initNavbar() {
@@ -333,6 +335,7 @@ function initPortfolioFilters() {
 }
 
 function initTestimonialSlider() {
+    const testimonialContainer = document.querySelector('.testimonials .flex');
     const testimonials = document.querySelectorAll('.testimonial-item');
     const prevBtn = document.getElementById('testimonial-prev');
     const nextBtn = document.getElementById('testimonial-next');
@@ -341,25 +344,35 @@ function initTestimonialSlider() {
     
     let currentIndex = 0;
     
+    // Initialize the testimonials
+    testimonials.forEach((testimonial, i) => {
+        if (i === 0) {
+            testimonial.classList.add('active');
+        } else {
+            testimonial.classList.remove('active');
+        }
+    });
     
     function showTestimonial(index) {
-        testimonials.forEach((testimonial, i) => {
-            if (i === index) {
-                testimonial.classList.add('active');
-                testimonial.style.opacity = '1';
-                testimonial.style.transform = 'translateX(0)';
-            } else {
-                testimonial.classList.remove('active');
-                testimonial.style.opacity = '0';
-                testimonial.style.transform = i < index ? 'translateX(-100px)' : 'translateX(100px)';
-            }
+        // Hide all testimonials first
+        testimonials.forEach((testimonial) => {
+            testimonial.classList.remove('active');
+            testimonial.style.opacity = '0';
+            testimonial.style.position = 'absolute';
         });
+        
+        // Show the current testimonial
+        const currentTestimonial = testimonials[index];
+        currentTestimonial.classList.add('active');
+        currentTestimonial.style.opacity = '1';
+        currentTestimonial.style.position = 'relative';
+        currentTestimonial.style.transform = 'translateX(0)';
     }
     
-    
+    // Show the first testimonial
     showTestimonial(currentIndex);
     
-    
+    // Previous button click handler
     if (prevBtn) {
         prevBtn.addEventListener('click', function() {
             currentIndex = (currentIndex - 1 + testimonials.length) % testimonials.length;
@@ -367,7 +380,7 @@ function initTestimonialSlider() {
         });
     }
     
-    
+    // Next button click handler
     if (nextBtn) {
         nextBtn.addEventListener('click', function() {
             currentIndex = (currentIndex + 1) % testimonials.length;
@@ -375,22 +388,52 @@ function initTestimonialSlider() {
         });
     }
     
-   
-    setInterval(function() {
+    // Auto-rotate testimonials
+    let autoRotate = setInterval(function() {
         currentIndex = (currentIndex + 1) % testimonials.length;
         showTestimonial(currentIndex);
     }, 5000);
+    
+    // Pause auto-rotation when hovering over testimonials
+    if (testimonialContainer) {
+        testimonialContainer.addEventListener('mouseenter', function() {
+            clearInterval(autoRotate);
+        });
+        
+        // Resume auto-rotation when mouse leaves
+        testimonialContainer.addEventListener('mouseleave', function() {
+            clearInterval(autoRotate); // Clear any existing interval first
+            autoRotate = setInterval(function() {
+                currentIndex = (currentIndex + 1) % testimonials.length;
+                showTestimonial(currentIndex);
+            }, 5000);
+        });
+    }
 }
 
 function initClientLogoScroll() {
     const clientLogos = document.querySelector('.client-logos');
     if (!clientLogos) return;
     
-    
+    // Clone all logo items to create a seamless scrolling effect
     const logoItems = document.querySelectorAll('.client-logo-item');
-    logoItems.forEach(item => {
-        const clone = item.cloneNode(true);
-        clientLogos.appendChild(clone);
+    
+    // Only clone if we haven't already done so (to prevent duplicating on page refresh)
+    if (logoItems.length <= 9) { // Original count of logos
+        logoItems.forEach(item => {
+            const clone = item.cloneNode(true);
+            clientLogos.appendChild(clone);
+        });
+    }
+    
+    // Pause animation on hover
+    clientLogos.addEventListener('mouseenter', function() {
+        clientLogos.style.animationPlayState = 'paused';
+    });
+    
+    // Resume animation on mouse leave
+    clientLogos.addEventListener('mouseleave', function() {
+        clientLogos.style.animationPlayState = 'running';
     });
 }
 
@@ -401,13 +444,13 @@ function initContactForm() {
     contactForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        
+        // Get form values
         const nameInput = document.getElementById('name');
         const emailInput = document.getElementById('email');
         const subjectInput = document.getElementById('subject');
         const messageInput = document.getElementById('message');
         
-        
+        // Basic validation
         let isValid = true;
         
         if (!nameInput.value.trim()) {
@@ -434,7 +477,7 @@ function initContactForm() {
             markValid(messageInput);
         }
         
-        
+        // If valid, simulate form submission
         if (isValid) {
             const submitBtn = contactForm.querySelector('button[type="submit"]');
             const originalText = submitBtn.textContent;
@@ -442,20 +485,20 @@ function initContactForm() {
             submitBtn.disabled = true;
             submitBtn.textContent = 'Sending...';
             
-            
+            // Simulate API call
             setTimeout(function() {
                 contactForm.reset();
                 submitBtn.disabled = false;
                 submitBtn.textContent = originalText;
                 
-                
+                // Show success message
                 const successMsg = document.createElement('div');
                 successMsg.className = 'bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mt-4';
                 successMsg.innerHTML = '<strong>Success!</strong> Your message has been sent.';
                 
                 contactForm.appendChild(successMsg);
                 
-                
+                // Remove success message after 5 seconds
                 setTimeout(function() {
                     successMsg.remove();
                 }, 5000);
@@ -463,11 +506,10 @@ function initContactForm() {
         }
     });
     
-    
     function markInvalid(input, message) {
         input.classList.add('border-red-500');
         
-        
+        // Add error message
         let errorElement = input.nextElementSibling;
         if (!errorElement || !errorElement.classList.contains('error-message')) {
             errorElement = document.createElement('p');
@@ -481,7 +523,7 @@ function initContactForm() {
     function markValid(input) {
         input.classList.remove('border-red-500');
         
-        
+        // Remove error message if exists
         const errorElement = input.nextElementSibling;
         if (errorElement && errorElement.classList.contains('error-message')) {
             errorElement.remove();
@@ -492,4 +534,98 @@ function initContactForm() {
         const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(email.toLowerCase());
     }
+}
+
+function initGoToTopButton() {
+    const goToTopButton = document.getElementById('go-to-top');
+    if (!goToTopButton) return;
+    
+    // Initial check for scroll position (in case page is already scrolled on load)
+    if (window.scrollY > 300) {
+        goToTopButton.style.opacity = '1';
+        goToTopButton.style.visibility = 'visible';
+    }
+    
+    // Use throttled scroll event to improve performance
+    let scrollTimeout;
+    window.addEventListener('scroll', function() {
+        if (scrollTimeout) return;
+        
+        scrollTimeout = setTimeout(function() {
+            if (window.scrollY > 300) {
+                goToTopButton.style.opacity = '1';
+                goToTopButton.style.visibility = 'visible';
+            } else {
+                goToTopButton.style.opacity = '0';
+                goToTopButton.style.visibility = 'hidden';
+            }
+            scrollTimeout = null;
+        }, 100);
+    });
+    
+    // Simple click handler without animations that might cause hanging
+    goToTopButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Use native scrolling instead of smooth scroll API
+        const scrollToTop = function() {
+            const c = document.documentElement.scrollTop || document.body.scrollTop;
+            if (c > 0) {
+                window.requestAnimationFrame(scrollToTop);
+                window.scrollTo(0, c - c / 8);
+            } else {
+                // Only add bounce animation when we've reached the top
+                goToTopButton.classList.add('bounce');
+                setTimeout(function() {
+                    goToTopButton.classList.remove('bounce');
+                }, 800);
+            }
+        };
+        scrollToTop();
+    });
+}
+
+function initStatsCounters() {
+    const statsSection = document.getElementById('stats');
+    if (!statsSection) return;
+    
+    const counters = document.querySelectorAll('.counter');
+    if (!counters.length) return;
+    
+    // Function to animate a counter
+    const animateCounter = (counter) => {
+        const target = parseInt(counter.getAttribute('data-target'));
+        const duration = 2000; // Animation duration in milliseconds
+        const step = target / (duration / 30); // Update every 30ms
+        let current = 0;
+        
+        const updateCounter = () => {
+            current += step;
+            if (current < target) {
+                counter.textContent = Math.floor(current);
+                requestAnimationFrame(updateCounter);
+            } else {
+                counter.textContent = target; // Ensure we end at the exact target
+            }
+        };
+        
+        updateCounter();
+    };
+    
+    // Use Intersection Observer to start animation when stats are visible
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                // Start animation for all counters
+                counters.forEach(counter => {
+                    animateCounter(counter);
+                });
+                
+                // Only need to observe once
+                observer.disconnect();
+            }
+        });
+    }, { threshold: 0.3 }); // Start when 30% of the section is visible
+    
+    observer.observe(statsSection);
 }

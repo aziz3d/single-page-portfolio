@@ -8,13 +8,14 @@ A modern, responsive portfolio website built with HTML, CSS, and JavaScript. Thi
 
 - **Modern Design**: Clean, professional layout with a boxed design (10px top/bottom, 15px left/right margins)
 - **Responsive Layout**: Fully responsive design that works on all devices (mobile, tablet, desktop)
-
 - **Interactive Elements**: 
   - Animated counters in the Client Stats section
   - Hover effects on cards and buttons
   - Smooth scrolling navigation
+  - "Go to Top" button with smooth animation
 - **Particle Background**: Modern particle animation effect in the hero section
 - **3D Elements**: Wireframe globe as an interactive 3D object
+- **Custom Favicon**: Unique SVG favicon with a stylized "P" design
 - **Section-Based Layout**:
   - Hero section with animated background
   - About Me with skills and personal information
@@ -24,8 +25,8 @@ A modern, responsive portfolio website built with HTML, CSS, and JavaScript. Thi
   - Portfolio showcase with filtering
   - Client Statistics with animated counters
   - Blog section
-  - Testimonials slider
-  - Client logos
+  - Testimonials slider with smooth transitions
+  - Client logos with continuous scrolling animation
   - Contact form
 
 ## Technologies Used
@@ -171,3 +172,31 @@ The portfolio is designed to be easily customizable:
 ## License
 
 This project is available for personal and commercial use.
+
+## Recent Updates
+
+### May 21, 2025
+
+1. **"Go to Top" Button Improvements**:
+   - Fixed hanging issues during scrolling by optimizing the scroll functionality with `requestAnimationFrame`
+   - Added a smooth bounce animation when reaching the top
+   - Improved visibility transitions using inline styles
+
+2. **Custom Favicon**:
+   - Added a new creative SVG favicon with a stylized "P" design
+   - Included PNG fallback for compatibility with older browsers
+
+3. **Client Stats Section**:
+   - Implemented animated counters using the IntersectionObserver API
+   - Added smooth animation that increments numbers to their target values
+   - Optimized performance by only triggering animations when elements are visible
+
+4. **Testimonials Slider**:
+   - Enhanced the testimonial slider with smooth transitions between items
+   - Added auto-rotation feature that pauses on hover
+   - Improved navigation controls for better user experience
+
+5. **Client Logo Section**:
+   - Implemented continuous horizontal scrolling animation
+   - Added hover effects that pause the animation and highlight the logo
+   - Optimized for performance with CSS animations
